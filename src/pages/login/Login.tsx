@@ -66,24 +66,18 @@ function Login() {
           isWeb: true,
         }
       )
-      // if (response.status !== 200) {
-      //   throw new Error(`HTTP error! Status: ${response.status}`)
-      // }
-
+      if (response.status == 200) {
+        navigate('/clinician-sideNav')
+      }
       console.log(response.data)
-
       console.log(code, username)
-
-      // Navigate only if the response status is 200
-      navigate('/clinician-sideNav')
     }
 
     fetch()
   }
   return (
     <>
-      <div className='h-screen  flex justify-center items-center bg-orange-800'>
-       
+      <div className='h-screen flex justify-center items-center bg-primary'>
         {otppage ? (
           <div className=' bg-white w-[400px]  px-20 py-12 rounded-2xl'>
             <div>
@@ -126,7 +120,7 @@ function Login() {
                 />
                 <button
                   type='submit'
-                  className={`bg-orange-600 px-10 py-2 border rounded text-lg font-serif ${
+                  className={`bg-orange-500  text-white px-10 py-2 border rounded text-lg font-normal ${
                     mutation.isLoading ? ' cursor-not-allowed' : 'Login'
                   }`}
                   disabled={mutation.isLoading}
@@ -134,6 +128,9 @@ function Login() {
                   {mutation.isLoading ? 'Logging in...' : 'Login'}
                 </button>
               </form>
+              <div className='text-left text-green-800 text-sm font-semibold p-2'>
+                Forgot Password
+              </div>
             </div>
           </div>
         ) : (
@@ -152,7 +149,8 @@ function Login() {
 
               <button
                 type='submit'
-                className='bg-orange-400 rounded px-20 py-2 text-white mt-4 cursor-pointer font-serif text-[18px]'
+                className='bg-orange-400 rounded px-20 py-2 text-white mt-4
+                 cursor-pointer font-serif text-[18px]'
                 disabled={mutation.isLoading}
                 onClick={verifyOtp}
               >

@@ -1,14 +1,14 @@
-// import SideNavLogo from '../assets/image 2.png'
-// import icon from '../assets/Group.png'
-import { NavLink, useLocation } from 'react-router-dom'
-// import logout from '../assets/logout.svg'
-import { Link } from 'react-router-dom'
-// import activeIcon from '../assets/Frame2.png'
+import { NavLink, useLocation, Link } from 'react-router-dom'
+import pku from '../assets/logopku.jpg'
 
 const navigation = [
   {
-    name: 'Manage Appointments',
-    // icon: icon,
+    name: 'Dashboard',
+    path: '/dashboard',
+  },
+  {
+    name: 'Clinician',
+    path: '/clinician',
   },
 ]
 
@@ -21,26 +21,24 @@ export default function PatientSideNav() {
   const location = useLocation()
   return (
     <>
-      <div className='flex flex-col w-[17%] justify-between px-4 fixed top-0 z-50  h-screen shadow-custom border border-r-[#EAECF0] bg-white'>
-        <div className=''>
-          <div className='my-5'>{/* <img src={SideNavLogo} alt='' /> */}</div>
+      <div className='flex  flex-col shadow-md  w-[18%] justify-between fixed top-0 z-50  h-screen border border-r-[#EAECF0]'>
+        <div className='border border-red-900 py-4 px-4 flex flex-col gap-4'>
+          <div className='h-20 w-20'>{<img src={pku} alt='pku' />}</div>
 
           {navigation.map((navItem) => (
             <NavLink
               key={navItem.name}
-              to={`/${navItem.name.toLowerCase().replace(' ', '-')}`}
-              className='mb-4 flex items-center cursor-pointer  py-2 text-sm text-secondary'
+              to={`/${navItem.path}`}
+              className='flex items-center border cursor-pointer px-1 rounded-lg font-serif py-2 text-sm text-secondary'
               style={
-                location.pathname === '/book-appointment' ||
-                location.pathname === '/manage-appointments'
+                location.pathname === '/dashboard'
                   ? activeStyle
                   : { backgroundColor: 'white' }
               }
             >
               {/* <img
                 src={
-                  location.pathname === '/manage-appointments' ||
-                  location.pathname === '/book-appointment'
+                  location.pathname === '/dashboard' 
                     ? activeIcon
                     : ''
                 }
@@ -50,27 +48,15 @@ export default function PatientSideNav() {
               {navItem.name}
             </NavLink>
           ))}
-          <NavLink
-            to='/parent-support'
-            className={
-              'mb-4 flex items-center cursor-pointer  py-2 text-sm text-secondary'
-            }
-            style={({ isActive }) =>
-              isActive ? activeStyle : { backgroundColor: 'white' }
-            }
-          >
-            {/* <img
-              src={location.pathname === '/parent-support' ? activeIcon : icon}
-              alt=''
-              className='mx-2 w-6 h-6 inline-block'
-            /> */}
-            Support
-          </NavLink>
         </div>
         <Link to='/'>
-          <div className='mb-10'>
-            {/* <img src={} alt='' className='inline-block mx-2' /> */}
-            <p className='text-sm text-secondary inline-block'>Logout</p>
+          <div className=' flex gap-4 py-4 px-4 mb-10 items-center'>
+            <img
+              src={'https://img.icons8.com/?size=50&id=2445&format=png'}
+              alt=''
+              className='inline-block  h-6 w-8'
+            />
+            <p className=' text-black  text-lg font-medium'>Logout</p>
           </div>
         </Link>
       </div>
