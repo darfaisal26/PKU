@@ -1,62 +1,57 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import Button from '../../../../components/button'
+import { getAuthToken } from '../../../../utils/auth'
 
 interface Data {
-  Id: number
-  Name: string
-  FoodCategoryImage: string
-  FoodCategoryImagepath: string
-  CreatedDate: string
-  TimeStamp: string
+  name: string
+  foodCategoryImage: string
+  foodCategoryImagepath: string
 }
 const AddCategory = () => {
-  const [image, setimage] = useState('')
   const [categoryname, setcategoryname] = useState('')
+  const [image, setimage] = useState('')
+  const authToken = getAuthToken()
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('handleFileChange')
     const selectedFile = event.target.files?.[0]
     if (selectedFile) {
       const reader = new FileReader()
       reader.onload = (e) => {
         if (typeof e.target.result === 'string') {
           setimage(e.target.result)
+          console.log(image, 'imagepath or image')
         }
-        // Add additional handling for other types if needed
       }
       reader.readAsDataURL(selectedFile)
     }
   }
 
-  const mutation = useMutation(
-    (requestData) =>
-      fetch('https://pkudevapi.imobisoft.uk/api/FoodCategory/Create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // Add any additional headers if needed
-        },
-        body: JSON.stringify(requestData),
-      }).then((response) => console.log(response.json())),
-    {
-      onMutate: (requestData) => {
-        // You can perform optimistic updates here if needed
-        // Return the updated state or a promise that resolves to the updated state
-        return requestData
+  const mutation = useMutation(async (requestData: Data) =>
+    fetch('https://pkudevapi.imobisoft.uk/api/FoodCategory/Create', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+        'Content-Type': 'application/json',
       },
-    }
+      body: JSON.stringify(requestData),
+    }).then(async (response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+    })
   )
-  const date = new Date()
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    console.log('submiited')
+
     const requestBody: Data = {
-      Id: 19,
-      Name: `${categoryname}`,
-      FoodCategoryImage: '',
-      FoodCategoryImagepath: `${image}`,
-      CreatedDate: `${date}`,
-      TimeStamp: `${date}`,
+      name: categoryname,
+      foodCategoryImage: image,
+      foodCategoryImagepath: '',
     }
-    console.log(requestBody)
+    console.log(requestBody, 'requestbody')
     mutation.mutate(requestBody)
   }
   return (
@@ -73,7 +68,11 @@ const AddCategory = () => {
             children={''}
           />
         </div>
-        <form onSubmit={handleSubmit}>
+        <form
+          encType=' multipart/form-data'
+          onSubmit={handleSubmit}
+          className='grid gap-6'
+        >
           <div className='border rounded-md py-2 '>
             <input
               type='text'
@@ -97,20 +96,22 @@ const AddCategory = () => {
                 className='hidden'
                 onChange={handleFileChange}
               />
-              No File Selected
+              {image ? 'file selected' : 'No File Selected '}
             </label>
-            <div className='flex justify-center items-center p-4'>
-              {image && <img src={image} alt='Selected image' />}
-            </div>
           </div>
+          {image && (
+            <div className='flex border justify-center items-center p-4'>
+              <img src={image} alt='Selected image' />
+            </div>
+          )}
           <div className=' flex justify-end px-8 py-2'>
-            <Button
+            <button
               className='bg-gray-200 rounded italic border border-primary  
              text-center text-lg font-normal px-12 py-2 '
-              title={mutation.isLoading ? 'Sending...' : 'Submit'}
-              children={''}
               type='submit'
-            />
+            >
+              {mutation.isLoading ? 'Sending...' : 'Submit'}
+            </button>
           </div>
         </form>
       </div>

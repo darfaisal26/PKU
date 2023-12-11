@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom'
 import Input from '../../components/Input'
 import Label from '../../components/Label'
 import axios from 'axios'
+import { OtpLogin } from './OtpLogin'
 
 function Login() {
   const queryClient = useQueryClient()
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
   const [otppage, setOtpPage] = useState(true)
-  const [code, setCode] = useState('')
 
   const navigate = useNavigate()
 
@@ -56,25 +56,25 @@ function Login() {
     mutation.mutate(formData)
   }
 
-  function verifyOtp() {
-    const fetch = async () => {
-      const response = await axios.post(
-        'https://pkudevapi.imobisoft.uk/api/Account/LoginWithOtp',
-        {
-          username: username,
-          code: code,
-          isWeb: true,
-        }
-      )
-      if (response.status == 200) {
-        navigate('/clinician-sideNav')
-      }
-      console.log(response.data)
-      console.log(code, username)
-    }
+  // function verifyOtp() {
+  //   const fetch = async () => {
+  //     const response = await axios.post(
+  //       'https://pkudevapi.imobisoft.uk/api/Account/LoginWithOtp',
+  //       {
+  //         username: username,
+  //         code: code,
+  //         isWeb: true,
+  //       }
+  //     )
+  //     if (response.status == 200) {
+  //       navigate('/clinician-sideNav')
+  //     }
+  //     console.log(response.data)
+  //     console.log(code, username)
+  //   }
 
-    fetch()
-  }
+  //   fetch()
+  // }
   return (
     <>
       <div className='h-screen flex justify-center items-center bg-primary'>
@@ -134,33 +134,38 @@ function Login() {
             </div>
           </div>
         ) : (
-          <div className='flex w-[50%] flex-col items-center bg-white shadow-2xl py-8 px-6 border border-red-900 rounded-lg'>
-            <h2 className='text-black font-semibold mb-4'>Enter OTP</h2>
-            <form
-              className='flex flex-col items-center'
-              onSubmit={handleSubmit}
-            >
-              <div>
-                <input
-                  className='w-36 h-10 text-center border rounded-md m-1 focus:outline-none focus:border-orange-500'
-                  onChange={(e) => setCode(e.target.value)}
-                />
-              </div>
+          <OtpLogin
+            handleSubmit={handleSubmit}
+            mutation={mutation}
+            formData={FormData}
+          />
+          // <div className='flex w-[50%] flex-col items-center bg-white shadow-2xl py-8 px-6 border border-red-900 rounded-lg'>
+          //   <h2 className='text-black font-semibold mb-4'>Enter OTP</h2>
+          //   <form
+          //     className='flex flex-col items-center'
+          //     onSubmit={handleSubmit}
+          //   >
+          //     <div>
+          //       <input
+          //         className='w-36 h-10 text-center border rounded-md m-1 focus:outline-none focus:border-orange-500'
+          //         onChange={(e) => setCode(e.target.value)}
+          //       />
+          //     </div>
 
-              <button
-                type='submit'
-                className='bg-orange-400 rounded px-20 py-2 text-white mt-4
-                 cursor-pointer font-serif text-[18px]'
-                disabled={mutation.isLoading}
-                onClick={verifyOtp}
-              >
-                {mutation.isLoading ? 'Verifying' : 'Verify Otp'}
-              </button>
-            </form>
-            <p className='text-green-800 py-8 font-semibold cursor-pointer text-[18px] font-serif'>
-              Resend Otp
-            </p>
-          </div>
+          //     <button
+          //       type='submit'
+          //       className='bg-orange-400 rounded px-20 py-2 text-white mt-4
+          //        cursor-pointer font-serif text-[18px]'
+          //       disabled={mutation.isLoading}
+          //       onClick={verifyOtp}
+          //     >
+          //       {mutation.isLoading ? 'Verifying' : 'Verify Otp'}
+          //     </button>
+          //   </form>
+          //   <p className='text-green-800 py-8 font-semibold cursor-pointer text-[18px] font-serif'>
+          //     Resend Otp
+          //   </p>
+          // </div>
         )}
       </div>
     </>

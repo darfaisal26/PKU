@@ -15,15 +15,30 @@ const Categories = lazy(
 const AddCategory = lazy(
   () => import('../pages/dashboard/AdminDashboard/Categories/AddCategory')
 )
+const UpdateCategory = lazy(
+  () => import('../pages/dashboard/AdminDashboard/Categories/UpdateCategory')
+)
 const SubCategories = lazy(
-  () => import('../pages/dashboard/AdminDashboard/SubCategories')
+  () => import('../pages/dashboard/AdminDashboard/SubCategories/SubCategories')
+)
+const AddNewSubCategory = lazy(
+  () =>
+    import('../pages/dashboard/AdminDashboard/SubCategories/AddNewSubCategory')
+)
+const UpdateSubCategory = lazy(
+  () =>
+    import('../pages/dashboard/AdminDashboard/SubCategories/UpdateSubCategory')
 )
 const Search = lazy(() => import('../pages/dashboard/AdminDashboard/Search'))
 const Clinicians = lazy(
-  () => import('../pages/dashboard/AdminDashboard/Clinicians')
+  () => import('../pages/dashboard/AdminDashboard/Clinicians/Clinicians')
 )
+const AddClinician = lazy(
+  () => import('../pages/dashboard/AdminDashboard/Clinicians/AddClinician')
+)
+
 const Patients = lazy(
-  () => import('../pages/dashboard/AdminDashboard/Patients')
+  () => import('../pages/dashboard/AdminDashboard/Patients/Patients')
 )
 const Assessments = lazy(
   () => import('../pages/dashboard/AdminDashboard/Asessments')
@@ -70,6 +85,38 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: '/editCategory',
+        element: (
+          <Suspense fallback={<Loader />}>
+            <UpdateCategory />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/add-newCategory',
+        element: (
+          <Suspense fallback={<Loader />}>
+            <AddCategory />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/editSubCategory',
+        element: (
+          <Suspense fallback={<Loader />}>
+            <UpdateSubCategory />
+          </Suspense>
+        ),
+      },
+      {
+        path: '/add-newSubCategory',
+        element: (
+          <Suspense fallback={<Loader />}>
+            <AddNewSubCategory />
+          </Suspense>
+        ),
+      },
+      {
         path: '/sub-categories',
         element: (
           <Suspense fallback={<Loader />}>
@@ -94,6 +141,15 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: '/add-clinician',
+        element: (
+          <Suspense fallback={<Loader />}>
+            <AddClinician />
+          </Suspense>
+        ),
+      },
+
+      {
         path: '/patients',
         element: (
           <Suspense fallback={<Loader />}>
@@ -114,14 +170,6 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<Loader />}>
             <ChangePassWord />
-          </Suspense>
-        ),
-      },
-      {
-        path: '/add-newCategory',
-        element: (
-          <Suspense fallback={<Loader />}>
-            <AddCategory />
           </Suspense>
         ),
       },

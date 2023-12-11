@@ -1,17 +1,28 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Button from '../../../../components/button'
 import Loader from '../../../../components/ui/Loader'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const Categories = () => {
+  const navigate = useNavigate()
+  const [show, setshow] = useState(false)
+
   // Define the function to fetch data
 
+  function handleEdit() {
+    setshow(true)
+  }
+
+  function navigateToEdit() {
+    navigate('/editCategory')
+  }
   const fetchData = async () => {
     const response = await fetch(
       'https://pkudevapi.imobisoft.uk/api/FoodCategory/GetAll?pageNo=1&pageSize=1000'
     )
     const data = await response.json()
+    console.log(data)
     return data.result.data
   }
 
@@ -76,15 +87,14 @@ const Categories = () => {
                  font-mono text-lg text-white'
                 />
               </Link>
-              <Link to={''}>
-                <Button
-                  title={'Edit'}
-                  children={''}
-                  className='bg-white border-2 border-primary rounded-2xl hover:bg-primary
+              <Button
+                title={'Edit'}
+                children={''}
+                className='bg-white border-2 border-primary rounded-2xl hover:bg-primary
                  hover:text-white px-14 py-2 font-semibold
                  font-mono text-lg text-black '
-                />
-              </Link>
+                onClick={handleEdit}
+              />
             </div>
           </div>
           <div className=' grid gap-4 grid-cols-4 px-6 py-6 rounded-md '>
@@ -104,6 +114,20 @@ const Categories = () => {
                 <h4 className='whitespace-normal flex text-lg'>
                   {detail.name}
                 </h4>
+                {show && (
+                  <div
+                    className='w-full  flex justify-end'
+                    onClick={navigateToEdit}
+                  >
+                    <img
+                      src={
+                        'https://cdn-icons-png.flaticon.com/128/1159/1159633.png'
+                      }
+                      alt=''
+                      className='h-8 w-8 '
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>

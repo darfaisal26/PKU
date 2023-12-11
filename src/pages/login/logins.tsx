@@ -1,20 +1,16 @@
-import React, { Fragment, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import Input from '../../components/Input'
 import Label from '../../components/Label'
 import axios from 'axios'
-// interface LoginError {
-//   username: string
-//   password: string
-// }
-// interface ResponseData {}
+import Cookies from 'js-cookie'
+
 interface FormData {
   username: string
   password: string
   isWeb: boolean
 }
-// <ResponseData, AxiosError<LoginError>, FormData></LoginError>
 function Logins() {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
@@ -25,16 +21,17 @@ function Logins() {
   const [formErrors, setFormErrors] = useState({})
 
   const mutation = useMutation(fetchLogin, {
-    onSuccess: () => {
-      console.log('Login successful')
+    onSuccess: (data) => {
+      console.log('Login successful', data)
       queryClient.invalidateQueries()
     },
     onError: (error) => {
       handleErrors(error)
+      console.log(error)
     },
   })
 
-  async function fetchLogin(formData: FormData) {
+  async function fetchLogin(formData: FormData): Promise<void> {
     try {
       const response = await axios.post(
         'https://pkudevapi.imobisoft.uk/api/Account/Login',
@@ -42,6 +39,7 @@ function Logins() {
       )
 
       const role = response.data.result.role
+      const token = response.data.result.token
 
       if (role === 'Admin') {
         localStorage.setItem('userRole', 'Admin')
@@ -50,6 +48,9 @@ function Logins() {
         localStorage.setItem('userRole', 'Clinician')
         setOtpPage(!otppage)
       }
+      Cookies.set('userToken', token)
+
+      return response.data
     } catch (error) {
       console.error('Error during login:', error)
     }
@@ -174,25 +175,6 @@ function Logins() {
               )}
             </Fragment>
           ))}
-          {/* {mutation.isError && (
-            <div className='text-red-500 text-sm'>{mutation.error.message}</div>
-          )} */}
-          {/* {mutation.isError && (
-            <div className='error-message'>
-              {mutation.error.response ? (
-                // Display specific error message for known status codes
-                <>
-                  {mutation.error.response.status === 401 && (
-                    <span>Invalid username or password</span>
-                  )}
-                  {/* Add more cases for other status codes as needed 
-                </>
-              ) : (
-                // Display a generic error message for unknown errors
-                <span>An error occurred during login</span>
-              )}
-            </div>
-          )} */}
 
           <button
             type='submit'

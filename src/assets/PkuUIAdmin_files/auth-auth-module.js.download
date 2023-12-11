@@ -1,0 +1,116 @@
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([["auth-auth-module"],{
+
+/***/ "./src/app/auth/auth.module.ts":
+/*!*************************************!*\
+  !*** ./src/app/auth/auth.module.ts ***!
+  \*************************************/
+/*! exports provided: AuthModule */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AuthModule", function() { return AuthModule; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/__ivy_ngcc__/fesm2015/common.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
+/* harmony import */ var _shared_guard_login_check_guard__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/guard/login-check.guard */ "./src/app/shared/guard/login-check.guard.ts");
+
+
+
+
+
+
+const routes = [
+    {
+        path: '', loadChildren: () => Promise.all(/*! import() | login-login-module */[__webpack_require__.e("default~assmnt-list-assmnt-list-module~assmnt-view-assmnt-view-module~catg-add-catg-add-module~catg-~bb770caf"), __webpack_require__.e("default~assmnt-list-assmnt-list-module~assmnt-view-assmnt-view-module~catg-add-catg-add-module~clini~d9075f01"), __webpack_require__.e("common"), __webpack_require__.e("login-login-module")]).then(__webpack_require__.bind(null, /*! ./login/login.module */ "./src/app/auth/login/login.module.ts")).then(m => m.LoginModule),
+        canActivate: [_shared_guard_login_check_guard__WEBPACK_IMPORTED_MODULE_3__["LoginCheckGuard"]]
+    },
+    {
+        path: 'login', loadChildren: () => Promise.all(/*! import() | login-login-module */[__webpack_require__.e("default~assmnt-list-assmnt-list-module~assmnt-view-assmnt-view-module~catg-add-catg-add-module~catg-~bb770caf"), __webpack_require__.e("default~assmnt-list-assmnt-list-module~assmnt-view-assmnt-view-module~catg-add-catg-add-module~clini~d9075f01"), __webpack_require__.e("common"), __webpack_require__.e("login-login-module")]).then(__webpack_require__.bind(null, /*! ./login/login.module */ "./src/app/auth/login/login.module.ts")).then(m => m.LoginModule),
+        canActivate: [_shared_guard_login_check_guard__WEBPACK_IMPORTED_MODULE_3__["LoginCheckGuard"]]
+    },
+    {
+        path: 'login', loadChildren: () => Promise.all(/*! import() | login-login-module */[__webpack_require__.e("default~assmnt-list-assmnt-list-module~assmnt-view-assmnt-view-module~catg-add-catg-add-module~catg-~bb770caf"), __webpack_require__.e("default~assmnt-list-assmnt-list-module~assmnt-view-assmnt-view-module~catg-add-catg-add-module~clini~d9075f01"), __webpack_require__.e("common"), __webpack_require__.e("login-login-module")]).then(__webpack_require__.bind(null, /*! ./login/login.module */ "./src/app/auth/login/login.module.ts")).then(m => m.LoginModule),
+        canActivate: [_shared_guard_login_check_guard__WEBPACK_IMPORTED_MODULE_3__["LoginCheckGuard"]]
+    },
+    {
+        path: 'forgot-password',
+        loadChildren: () => Promise.all(/*! import() | forgot-password-forgot-password-module */[__webpack_require__.e("default~assmnt-list-assmnt-list-module~assmnt-view-assmnt-view-module~catg-add-catg-add-module~catg-~bb770caf"), __webpack_require__.e("common"), __webpack_require__.e("forgot-password-forgot-password-module")]).then(__webpack_require__.bind(null, /*! ./forgot-password/forgot-password.module */ "./src/app/auth/forgot-password/forgot-password.module.ts")).then(m => m.ForgotPasswordModule),
+    },
+    {
+        path: 'reset-password',
+        loadChildren: () => Promise.all(/*! import() | reset-password-reset-password-module */[__webpack_require__.e("default~assmnt-list-assmnt-list-module~assmnt-view-assmnt-view-module~catg-add-catg-add-module~catg-~bb770caf"), __webpack_require__.e("common"), __webpack_require__.e("reset-password-reset-password-module")]).then(__webpack_require__.bind(null, /*! ./reset-password/reset-password.module */ "./src/app/auth/reset-password/reset-password.module.ts")).then(m => m.ResetPasswordModule),
+    },
+    {
+        path: 'create-password',
+        loadChildren: () => Promise.all(/*! import() | create-password-create-password-module */[__webpack_require__.e("default~assmnt-list-assmnt-list-module~assmnt-view-assmnt-view-module~catg-add-catg-add-module~catg-~bb770caf"), __webpack_require__.e("common"), __webpack_require__.e("create-password-create-password-module")]).then(__webpack_require__.bind(null, /*! ./create-password/create-password.module */ "./src/app/auth/create-password/create-password.module.ts")).then(m => m.CreatePasswordModule),
+    }
+];
+class AuthModule {
+}
+AuthModule.ɵmod = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: AuthModule });
+AuthModule.ɵinj = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ factory: function AuthModule_Factory(t) { return new (t || AuthModule)(); }, providers: [_shared_guard_login_check_guard__WEBPACK_IMPORTED_MODULE_3__["LoginCheckGuard"]], imports: [[
+            // Authentication
+            _angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"],
+            _angular_router__WEBPACK_IMPORTED_MODULE_2__["RouterModule"].forChild(routes)
+        ]] });
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](AuthModule, { imports: [
+        // Authentication
+        _angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"], _angular_router__WEBPACK_IMPORTED_MODULE_2__["RouterModule"]] }); })();
+/*@__PURE__*/ (function () { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](AuthModule, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["NgModule"],
+        args: [{
+                imports: [
+                    // Authentication
+                    _angular_common__WEBPACK_IMPORTED_MODULE_1__["CommonModule"],
+                    _angular_router__WEBPACK_IMPORTED_MODULE_2__["RouterModule"].forChild(routes)
+                ],
+                providers: [_shared_guard_login_check_guard__WEBPACK_IMPORTED_MODULE_3__["LoginCheckGuard"]]
+            }]
+    }], null, null); })();
+
+
+/***/ }),
+
+/***/ "./src/app/shared/guard/login-check.guard.ts":
+/*!***************************************************!*\
+  !*** ./src/app/shared/guard/login-check.guard.ts ***!
+  \***************************************************/
+/*! exports provided: LoginCheckGuard */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LoginCheckGuard", function() { return LoginCheckGuard; });
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/__ivy_ngcc__/fesm2015/core.js");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/__ivy_ngcc__/fesm2015/router.js");
+/* harmony import */ var _services_token_data_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/token-data.service */ "./src/app/shared/services/token-data.service.ts");
+
+
+
+
+class LoginCheckGuard {
+    constructor(router, tokenDataServ) {
+        this.router = router;
+        this.tokenDataServ = tokenDataServ;
+    }
+    canActivate(next, state) {
+        if (this.tokenDataServ.getToken()) {
+            this.router.navigate(['/categories']);
+            return false;
+        }
+        else
+            return true;
+    }
+}
+LoginCheckGuard.ɵfac = function LoginCheckGuard_Factory(t) { return new (t || LoginCheckGuard)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_router__WEBPACK_IMPORTED_MODULE_1__["Router"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_services_token_data_service__WEBPACK_IMPORTED_MODULE_2__["TokenDataService"])); };
+LoginCheckGuard.ɵprov = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: LoginCheckGuard, factory: LoginCheckGuard.ɵfac });
+/*@__PURE__*/ (function () { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](LoginCheckGuard, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"]
+    }], function () { return [{ type: _angular_router__WEBPACK_IMPORTED_MODULE_1__["Router"] }, { type: _services_token_data_service__WEBPACK_IMPORTED_MODULE_2__["TokenDataService"] }]; }, null); })();
+
+
+/***/ })
+
+}]);
+//# sourceMappingURL=auth-auth-module.js.map
