@@ -12,7 +12,8 @@ const Layout = () => {
         ) : userRole === 'Clinician' ? (
           <PatientSideNav />
         ) : (
-          <div>Error: Invalid user role</div>
+          // <div>Error: Invalid user role</div>
+          ''
         )}
       </aside>
       <main className='w-[82%] h-screen bg-green-600'>

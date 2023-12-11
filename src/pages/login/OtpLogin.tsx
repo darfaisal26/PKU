@@ -2,13 +2,8 @@ import axios from 'axios'
 import { useState } from 'react'
 // import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-export const OtpLogin = ({
-  handleSubmit,
-
-  mutation,
-  formData,
-}) => {
-  const [code, setCode] = useState('')
+export const OtpLogin = ({ handleSubmit, mutation, formData }) => {
+  const [code, setCode] = useState<string>('')
 
   const navigate = useNavigate()
 

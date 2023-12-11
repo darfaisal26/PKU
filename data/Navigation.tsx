@@ -40,4 +40,5 @@ const navigation = [
     path: '/change-password',
   },
 ]
+
 export default navigation
