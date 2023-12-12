@@ -30,7 +30,9 @@ const UpdateSubCategory = lazy(
   () =>
     import('../pages/dashboard/AdminDashboard/SubCategories/UpdateSubCategory')
 )
-const Search = lazy(() => import('../pages/dashboard/AdminDashboard/Search'))
+const Search = lazy(
+  () => import('../pages/dashboard/AdminDashboard/Search/Search')
+)
 const Clinicians = lazy(
   () => import('../pages/dashboard/AdminDashboard/Clinicians/Clinicians')
 )
@@ -41,7 +43,7 @@ const Patients = lazy(
   () => import('../pages/dashboard/AdminDashboard/Patients/Patients')
 )
 const Assessments = lazy(
-  () => import('../pages/dashboard/AdminDashboard/Asessments')
+  () => import('../pages/dashboard/AdminDashboard/Assesments/Asessments')
 )
 const ChangePassWord = lazy(
   () => import('../pages/dashboard/AdminDashboard/ChangePassWord')

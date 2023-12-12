@@ -36,15 +36,6 @@ export default function PatientSideNav() {
                   : { backgroundColor: 'white' }
               }
             >
-              {/* <img
-                src={
-                  location.pathname === '/dashboard' 
-                    ? activeIcon
-                    : ''
-                }
-                alt=''
-                className='mx-2 w-6 h-6'
-              /> */}
               {navItem.name}
             </NavLink>
           ))}

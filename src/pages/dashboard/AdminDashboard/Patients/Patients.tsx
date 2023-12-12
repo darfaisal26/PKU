@@ -27,7 +27,7 @@ const Patients = () => {
   }
 
   const {
-    data: patients,
+    data: patients = [],
     isLoading,
     // isError,
     refetch,
@@ -168,7 +168,7 @@ const Patients = () => {
             </>
           )}
 
-          <div className='inline-flex justify-center gap-6'>
+          <div className='inline-flex justify-center'>
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}

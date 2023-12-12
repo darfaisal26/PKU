@@ -9,15 +9,15 @@ const fetchData = async () => {
     'https://pkudevapi.imobisoft.uk/api/FoodCategory/GetAll?pageNo=1&pageSize=1000'
   )
   const data = await response.json()
-  console.log(data)
   return data.result.data
 }
 
 const Categories = () => {
   const navigate = useNavigate()
   const [show, setShow] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
-  const { data, error, isLoading } = useQuery([], fetchData)
+  const { data, isLoading } = useQuery([], fetchData)
 
   const handleEdit = () => {
     setShow(true)
@@ -30,9 +30,12 @@ const Categories = () => {
   useEffect(() => {
     fetchData()
   }, [])
-  if (error) {
-    return <h1>loading error</h1>
-  }
+
+  const filteredData = data
+    ? data.filter((detail) =>
+        detail.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : []
   return (
     <div className='border px-10 pt-20 grid gap-10'>
       <h1 className='text-xl text-white font-medium italic p-2'>Categories</h1>
@@ -43,14 +46,16 @@ const Categories = () => {
             <div className='relative border-2 flex border-gray-400  flex-wrap items-stretch  rounded-md bg-white p-2'>
               <input
                 type='search'
-                className='relative text-lg flex-auto rounded font-normal leading-[1.6] 
-                  outline-none'
+                className='relative  text-lg flex-auto rounded font-normal leading-[1.6] 
+                outline-none'
                 placeholder='Search'
                 aria-label='Search'
                 aria-describedby='button-addon1'
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
+
               <button
-                className='relative bg-primary flex items-center rounded font-medium  shadow-md '
+                className='relative  bg-primary flex items-center rounded   font-medium  shadow-md '
                 type='button'
                 id='button-addon1'
               >
@@ -60,7 +65,11 @@ const Categories = () => {
                   fill='white'
                   className='h-7 w-7'
                 >
-                  {/* SVG path */}
+                  <path
+                    fillRule='evenodd'
+                    d='M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z'
+                    clipRule='evenodd'
+                  />
                 </svg>
               </button>
             </div>
@@ -84,7 +93,7 @@ const Categories = () => {
             </div>
           </div>
           <div className=' grid gap-4 grid-cols-4 px-6 py-6 rounded-md '>
-            {data.map((detail, index) => (
+            {filteredData.map((detail, index) => (
               <div
                 key={index}
                 className='border-2 border-gray-400 bg-white shadow-md opacity-90 hover:opacity-100 cursor-pointer hover:border-green-600 

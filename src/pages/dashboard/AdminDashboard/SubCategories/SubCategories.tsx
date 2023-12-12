@@ -1,14 +1,14 @@
-'use strict'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Button from '../../../../components/button'
 import Loader from '../../../../components/ui/Loader'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 
 const SubCategories = () => {
-  const queryClient = useQueryClient()
   const [show, setShow] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
+
   const itemsPerPage = 12
 
   const fetchData = async (page = 1) => {
@@ -21,9 +21,16 @@ const SubCategories = () => {
     return data.result.data
   }
 
-  const { data, error, isLoading } = useQuery(
+  const {
+    data: subCategories = [],
+    error,
+    isLoading,
+  } = useQuery(
     ['subCategories', { page: currentPage }],
-    () => fetchData(currentPage)
+    () => fetchData(currentPage),
+    {
+      keepPreviousData: true,
+    }
   )
 
   console.log('error is', error)
@@ -40,28 +47,14 @@ const SubCategories = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1))
   }
 
-  const handleOptimisticUpdate = (newData) => {
-    queryClient.setQueryData(
-      ['subCategories', { page: currentPage }],
-      (prevData) => ({
-        ...prevData,
-        data: [...prevData.data, ...newData],
-      })
-    )
-  }
-
   useEffect(() => {
-    const fetchDataAsync = async () => {
-      const newData = await fetchData(currentPage)
-
-      // Update the cache optimistically
-      handleOptimisticUpdate(newData)
-    }
-
-    fetchDataAsync()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchData()
   }, [currentPage])
-
+  const filteredData = subCategories
+    ? subCategories.filter((detail) =>
+        detail.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : []
   return (
     <div className='border px-10 pt-20 grid gap-10'>
       <h1 className='text-xl text-white font-medium italic p-2'>
@@ -70,7 +63,7 @@ const SubCategories = () => {
 
       {isLoading && <Loader />}
 
-      {data && (
+      {subCategories && (
         <div className='border-2 rounded-md bg-white grid gap-10 px-4 py-4'>
           <div className='flex justify-end px-8 py-2 gap-10'>
             <div className='relative border-2 flex border-gray-400  flex-wrap items-stretch  rounded-md bg-white p-2'>
@@ -81,6 +74,7 @@ const SubCategories = () => {
                 placeholder='Search'
                 aria-label='Search'
                 aria-describedby='button-addon1'
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
 
               <button
@@ -123,7 +117,7 @@ const SubCategories = () => {
           </div>
 
           <div className=' grid gap-4 grid-cols-4 px-6 py-6 rounded-md '>
-            {data?.map((detail, index) => (
+            {filteredData?.map((detail, index) => (
               <div
                 key={index}
                 className='border-2 border-gray-400
@@ -153,23 +147,24 @@ const SubCategories = () => {
             ))}
           </div>
 
-          <div className='flex justify-center mt-4 gap-4'>
+          <div className='inline-flex justify-center'>
             <button
               onClick={handlePrevious}
               disabled={currentPage === 1}
-              className={` px-4 py-2 bg-primary text-white rounded-md  ${
+              className={` bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l ${
                 currentPage === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
               }`}
             >
               Previous
             </button>
-            <span className='mx-4'>
-              {/* Page {currentPage} of {totalPages} */}
-            </span>
             <button
               onClick={handleNext}
-              // disabled={currentPage === totalPages}
-              className='px-4 py-2 bg-primary text-white rounded-md cursor-pointer'
+              disabled={subCategories.length === 0}
+              className={`${
+                subCategories.length === 0
+                  ? 'cursor-not-allowed'
+                  : 'cursor-pointer'
+              } bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r`}
             >
               Next
             </button>

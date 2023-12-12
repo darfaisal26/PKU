@@ -1,7 +1,7 @@
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import pku from '../assets/logopku.jpg'
 import navigation from '../../data/Navigation'
-
+import { useCookies } from 'react-cookie'
 const activeStyle: React.CSSProperties = {
   backgroundColor: '#EAFFED',
   color: '#3EB049',
@@ -9,6 +9,13 @@ const activeStyle: React.CSSProperties = {
 
 export default function SideNav() {
   const location = useLocation()
+  const [, , removeCookie] = useCookies(['userToken'])
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    removeCookie('userToken', { path: '/' })
+    navigate('/')
+  }
 
   return (
     <>
@@ -24,7 +31,6 @@ export default function SideNav() {
               className='mb-4 flex gap-2 items-center cursor-pointer px-2 
                 py-2  text-lg  rounded-md text-black font-normal'
               style={
-                // navItem.path === '/dashboard' ||
                 location.pathname === navItem.path
                   ? activeStyle
                   : { backgroundColor: 'white' }
@@ -36,12 +42,12 @@ export default function SideNav() {
           </div>
         ))}
 
-        <Link to='/'>
-          <div className='mb-8 px-2 py-2 flex gap-2'>
-            <img src='https://pkudev.imobisoft.uk/assets/icons/logout.svg'></img>
-            <span className='text-lg'>Logout</span>
-          </div>
-        </Link>
+        {/* <Link to='/'> */}
+        <div className='mb-8 px-2 py-2 flex gap-2' onClick={handleLogout}>
+          <img src='https://pkudev.imobisoft.uk/assets/icons/logout.svg'></img>
+          <span className='text-lg'>Logout</span>
+        </div>
+        {/* </Link> */}
       </div>
     </>
   )

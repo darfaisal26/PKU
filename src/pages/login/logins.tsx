@@ -85,10 +85,7 @@ function Logins() {
       mutation.mutate(formData)
       console.log(formData)
     } catch (error) {
-      console.error('Error during form submission:', error)
-    } finally {
-      // Reset credentials to default values
-      setCredentials({ username: '', password: '' })
+      console.error('Error during form submission:', error.message)
     }
   }
 
@@ -167,7 +164,7 @@ function Logins() {
                   }))
                 }
                 className={`rounded-[7px] border mb-5 border-[#DFE5EF] bg-white p-2
-                 focus:border-orange-600 focus-visible:outline-2 outline-orange-600`}
+                 focus:border-orange-600 focus-visible:outline outline-orange-600`}
                 required={false}
               />
               {formErrors[field] && (
