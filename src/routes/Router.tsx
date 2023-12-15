@@ -1,10 +1,12 @@
-import React, { lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Loader from '../components/ui/Loader'
 import Layout from '../layout/Layout'
 import Logins from '../pages/login/logins'
+// import ProtectedRoutes from './ProtectedRoutes'
 
 // Import components with more meaningful names
+
 const AdminSideNav = lazy(() => import('../components/AdminSideNav'))
 const PatientSideNav = lazy(() => import('../components/patientSideNav'))
 const Dashboard = lazy(
@@ -52,6 +54,13 @@ const ChangePassWord = lazy(
 const routes = [
   {
     path: '/admin-sideNav',
+    // element: (
+    //   <Suspense fallback={<Loader />}>
+    //     <ProtectedRoutes path='/admin-sideNav' element={<AdminSideNav />}>
+    //       <Route path='/dashboard' element={<Dashboard />} />
+    //     </ProtectedRoutes>
+    //   </Suspense>
+    // ),
     element: (
       <Suspense fallback={<Loader />}>
         <AdminSideNav />
@@ -83,7 +92,7 @@ const routes = [
     ),
   },
   {
-    path: '/editCategory',
+    path: '/editCategory/:id',
     element: (
       <Suspense fallback={<Loader />}>
         <UpdateCategory />

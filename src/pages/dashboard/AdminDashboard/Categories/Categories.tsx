@@ -1,12 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import Button from '../../../../components/button'
 import Loader from '../../../../components/ui/Loader'
-import { useQuery } from '@tanstack/react-query'
+import { Loader2 } from 'lucide-react'
+// import UpdateCategory from './UpdateCategory'
 
-const fetchData = async () => {
+const BASE_URL = 'https://pkudevapi.imobisoft.uk/api'
+
+const fetchData = async (pageNo, pageSize) => {
   const response = await fetch(
-    'https://pkudevapi.imobisoft.uk/api/FoodCategory/GetAll?pageNo=1&pageSize=1000'
+    `${BASE_URL}/FoodCategory/GetAll?pageNo=${pageNo}&pageSize=${pageSize}`
   )
   const data = await response.json()
   return data.result.data
@@ -14,48 +18,83 @@ const fetchData = async () => {
 
 const Categories = () => {
   const navigate = useNavigate()
-  const [show, setShow] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+  type CategoriesState = {
+    showEditIcon: boolean
+    searchQuery: string
+    currentPage: number
+  }
 
-  const { data, isLoading } = useQuery([], fetchData)
+  // Use the defined types for your state variables
+  const [state, setState] = useState<CategoriesState>({
+    showEditIcon: false,
+    searchQuery: '',
+    currentPage: 1,
+  })
+  // const [selectedid, setSelectedid] = useState()
+
+  const { data, isLoading, isFetching } = useQuery(
+    ['categories', state.currentPage],
+    () => fetchData(state.currentPage, 16),
+    { keepPreviousData: true }
+  )
 
   const handleEdit = () => {
-    setShow(true)
+    // Use the spread operator to update the state
+    setState((prevState) => ({
+      ...prevState,
+      showEditIcon: true,
+    }))
   }
 
-  const navigateToEdit = () => {
-    navigate('/editCategory')
+  const navigateToEdit = (id: number) => {
+    console.log(id, ' is edit id')
+    // setSelectedid(id)
+    navigate(`/editCategory/${id}`)
   }
 
-  useEffect(() => {
-    fetchData()
-  }, [])
+  const handlePageChange = (newPage: number) => {
+    if (!isFetching) {
+      // Use the spread operator to update the state
+      setState((prevState) => ({
+        ...prevState,
+        currentPage: newPage,
+      }))
+    }
+  }
 
   const filteredData = data
     ? data.filter((detail) =>
-        detail.name.toLowerCase().includes(searchQuery.toLowerCase())
+        detail.name.toLowerCase().includes(state.searchQuery.toLowerCase())
       )
     : []
+
   return (
-    <div className='border px-10 pt-20 grid gap-10'>
+    <div className='border px-10 py-20 grid gap-6'>
       <h1 className='text-xl text-white font-medium italic p-2'>Categories</h1>
       {isLoading && <Loader />}
       {data && (
-        <div className='border-2 rounded-md bg-white grid gap-10 px-4 py-4'>
-          <div className='flex justify-end px-8 py-2 gap-10'>
-            <div className='relative border-2 flex border-gray-400  flex-wrap items-stretch  rounded-md bg-white p-2'>
+        <div
+          className='border-2 rounded-md bg-white grid gap-2 px-4 py-4'
+          style={{ maxHeight: '500px', overflowY: 'auto' }}
+        >
+          {/* search inputs and buttons */}
+          <div className='flex justify-end px-8 py-2 gap-4 '>
+            <div className='relative border-2 flex border-gray-400 flex-wrap items-stretch rounded-md bg-white p-2'>
               <input
                 type='search'
-                className='relative  text-lg flex-auto rounded font-normal leading-[1.6] 
-                outline-none'
                 placeholder='Search'
-                aria-label='Search'
-                aria-describedby='button-addon1'
-                onChange={(e) => setSearchQuery(e.target.value)}
+                value={state.searchQuery}
+                className='text-lg flex-auto rounded font-normal leading-[1.6]
+                outline-none'
+                onChange={(e) =>
+                  setState((prevState) => ({
+                    ...prevState,
+                    searchQuery: e.target.value,
+                  }))
+                }
               />
-
               <button
-                className='relative  bg-primary flex items-center rounded   font-medium  shadow-md '
+                className='relative bg-primary flex items-center rounded font-medium shadow-md'
                 type='button'
                 id='button-addon1'
               >
@@ -77,27 +116,35 @@ const Categories = () => {
               <Link to={'/add-newCategory'}>
                 <Button
                   title={'+ Add'}
-                  children={''}
                   className='bg-primary rounded-2xl px-14 py-2 border font-semibold
                      font-mono text-lg text-white'
+                  children={''}
                 />
               </Link>
               <Button
-                children={''}
                 title={'Edit'}
                 className='bg-white border-2 border-primary rounded-2xl hover:bg-primary
                      hover:text-white px-14 py-2 font-semibold
                      font-mono text-lg text-black '
                 onClick={handleEdit}
-              />
+              >
+                <img
+                  src={
+                    'https://cdn-icons-png.flaticon.com/128/1159/1159633.png'
+                  }
+                  alt='no'
+                  className='h-6 w-6 text-gray-400 border-red-500'
+                />
+              </Button>
             </div>
           </div>
-          <div className=' grid gap-4 grid-cols-4 px-6 py-6 rounded-md '>
+          {/* main data */}
+          <div className='grid gap-4 grid-cols-4 px-6 py-6 rounded-md  '>
             {filteredData.map((detail, index) => (
               <div
                 key={index}
                 className='border-2 border-gray-400 bg-white shadow-md opacity-90 hover:opacity-100 cursor-pointer hover:border-green-600 
-                   grid gap-2 font-serif italic rounded-md px-2 py-4 overflow-hidden'
+                 grid gap-2 font-serif italic rounded-md p-4 overflow-hidden'
               >
                 <span className='h-[5rem] '>
                   <img
@@ -106,25 +153,62 @@ const Categories = () => {
                     className='h-[5rem] w-[5rem] object-cover'
                   />
                 </span>
-                <h4 className='whitespace-normal flex text-lg'>
+                <h4 className='whitespace-normal flex text-lg break-all'>
                   {detail.name}
                 </h4>
-                {show && (
-                  <div
-                    className='w-full  flex justify-end'
-                    onClick={navigateToEdit}
-                  >
-                    <img
-                      src={
-                        'https://cdn-icons-png.flaticon.com/128/1159/1159633.png'
-                      }
-                      alt=''
-                      className='h-8 w-8 '
-                    />
-                  </div>
+                {state.showEditIcon && (
+                  <>
+                    <div
+                      className='w-full grid justify-end group '
+                      onClick={() => navigateToEdit(detail.id)}
+                    >
+                      <img
+                        src={
+                          'https://cdn-icons-png.flaticon.com/128/1159/1159633.png'
+                        }
+                        alt=''
+                        className='h-6 w-6 text-gray-400 '
+                      />
+                    </div>
+                  </>
                 )}
               </div>
             ))}
+          </div>
+          {/* pagination buttons */}
+
+          <div className='inline-flex justify-center gap-4'>
+            <button
+              onClick={() => handlePageChange(state.currentPage - 1)}
+              disabled={state.currentPage === 1 || isFetching}
+              className={`${
+                state.currentPage === 1 || isFetching
+                  ? 'cursor-not-allowed'
+                  : 'cursor-pointer'
+              } border px-4 py-2 text-white bg-green-500 rounded`}
+            >
+              {isFetching ? (
+                <Loader2 className='h-6 w-6 animate-spin  text-red-700' />
+              ) : (
+                'Previous'
+              )}
+            </button>
+            <button
+              title={`$`}
+              onClick={() => handlePageChange(state.currentPage + 1)}
+              disabled={data.length < 10 || isFetching}
+              className={`${
+                data.length < 10 || isFetching
+                  ? 'cursor-not-allowed'
+                  : 'cursor-pointer'
+              } border px-4 py-2 text-white bg-green-500 rounded`}
+            >
+              {isFetching ? (
+                <Loader2 className='h-6 w-6 animate-spin  text-red-700' />
+              ) : (
+                'Next'
+              )}
+            </button>
           </div>
         </div>
       )}

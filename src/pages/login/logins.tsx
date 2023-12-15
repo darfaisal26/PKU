@@ -16,13 +16,13 @@ function Logins() {
   const navigate = useNavigate()
 
   const [credentials, setCredentials] = useState({ username: '', password: '' })
-  const [otppage, setOtpPage] = useState(true)
-  const [code, setCode] = useState('')
+  const [otppage, setOtpPage] = useState<boolean>(true)
+  const [code, setCode] = useState<string>('')
   const [formErrors, setFormErrors] = useState({})
 
   const mutation = useMutation(fetchLogin, {
-    onSuccess: (data) => {
-      console.log('Login successful', data)
+    onSuccess: () => {
+      // console.log('Login successful', data)
       queryClient.invalidateQueries()
     },
     onError: (error) => {
@@ -44,11 +44,12 @@ function Logins() {
       if (role === 'Admin') {
         localStorage.setItem('userRole', 'Admin')
         navigate('/admin-sideNav')
-      } else if (role === 'Clinician') {
+      } 
+      else if (role === 'Clinician') {
         localStorage.setItem('userRole', 'Clinician')
         setOtpPage(!otppage)
       }
-      Cookies.set('userToken', token)
+      Cookies.set('userToken', token, { expires: 7 })
 
       return response.data
     } catch (error) {

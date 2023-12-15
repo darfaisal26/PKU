@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Button from '../../../../components/button'
 import Loader from '../../../../components/ui/Loader'
 import { useQuery } from '@tanstack/react-query'
+import { Loader2 } from 'lucide-react'
 
 const SubCategories = () => {
   const [show, setShow] = useState(false)
@@ -25,6 +26,7 @@ const SubCategories = () => {
     data: subCategories = [],
     error,
     isLoading,
+    isFetching,
   } = useQuery(
     ['subCategories', { page: currentPage }],
     () => fetchData(currentPage),
@@ -40,11 +42,17 @@ const SubCategories = () => {
   }
 
   const handleNext = () => {
-    setCurrentPage((prev) => prev + 1)
+    if (!isFetching) {
+      console.log('next is', isFetching)
+      setCurrentPage((prev) => prev + 1)
+    }
   }
 
   const handlePrevious = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1))
+    if (!isFetching) {
+      console.log('previous is', isFetching)
+      setCurrentPage((prev) => Math.max(prev - 1, 1))
+    }
   }
 
   useEffect(() => {
@@ -64,7 +72,10 @@ const SubCategories = () => {
       {isLoading && <Loader />}
 
       {subCategories && (
-        <div className='border-2 rounded-md bg-white grid gap-10 px-4 py-4'>
+        <div
+          className='border-2 rounded-md bg-white grid gap-10 px-4 py-4'
+          style={{ maxHeight: '500px', overflowY: 'auto' }}
+        >
           <div className='flex justify-end px-8 py-2 gap-10'>
             <div className='relative border-2 flex border-gray-400  flex-wrap items-stretch  rounded-md bg-white p-2'>
               <input
@@ -159,14 +170,18 @@ const SubCategories = () => {
             </button>
             <button
               onClick={handleNext}
-              disabled={subCategories.length === 0}
+              disabled={subCategories.length === 0 || isFetching}
               className={`${
-                subCategories.length === 0
+                subCategories.length === 0 || isFetching
                   ? 'cursor-not-allowed'
                   : 'cursor-pointer'
               } bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r`}
             >
-              Next
+              {isFetching ? (
+                <Loader2 className='h-6 w-6 animate-spin text-red-700' />
+              ) : (
+                'Next'
+              )}
             </button>
           </div>
         </div>

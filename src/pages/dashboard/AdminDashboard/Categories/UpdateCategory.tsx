@@ -1,18 +1,59 @@
-import React, { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import React, { useEffect, useState } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import Button from '../../../../components/button'
 import { Link, useParams } from 'react-router-dom'
+import { getAuthToken } from '../../../../utils/auth'
+import { Loader } from 'lucide-react'
 
 interface Data {
+  updatedid: number
   name: string
-  foodCategoryId: ''
-  foodCategoryName: string
+  foodCategoryImagepath: string
 }
 
 const UpdateCategory = () => {
   const { id } = useParams()
-  const [categoryName, setCategoryName] = useState('')
+  const [categoryName, setCategoryName] = useState<string>('')
   const [image, setImage] = useState<string | null>(null)
+  const authToken = getAuthToken()
+  const [selectedid, setSelectedid] = useState(id)
+
+  const { data: categoryDetails, isLoading } = useQuery<Data>(
+    ['categoryDetails', id],
+    async () => {
+      const response = await fetch(
+        `https://pkudevapi.imobisoft.uk/api/FoodCategory/GetById?id=${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      setSelectedid(id)
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch category details with status: ${response.status}`
+        )
+      }
+
+      const data = await response.json()
+
+      if (!data.result.data) {
+        throw new Error('Category details not found in the response data')
+      }
+
+      return data.result.data
+    }
+  )
+
+  useEffect(() => {
+    console.log(categoryDetails, '.........')
+    if (categoryDetails) {
+      setCategoryName(categoryDetails.name || '')
+      setImage(categoryDetails.foodCategoryImagepath)
+    }
+  }, [categoryDetails])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -26,19 +67,26 @@ const UpdateCategory = () => {
     }
   }
 
-  const updateCategoryMutation = useMutation((requestData: Data) =>
-    fetch(`https://pkudevapi.imobisoft.uk/api/FoodCategory/Update/${id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  const updateCategoryMutation = useMutation(
+    (requestData: Data) =>
+      fetch(`https://pkudevapi.imobisoft.uk/api/FoodCategory/Update?id=${id}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error(`Update failed with status: ${response.status}`)
+        }
+        return response.json()
+      }),
+    {
+      onError: (error: Error) => {
+        console.error('Update failed:', error.message)
       },
-      body: JSON.stringify(requestData),
-    }).then((response) => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok')
-      }
-      return response.json()
-    })
+    }
   )
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,9 +94,9 @@ const UpdateCategory = () => {
 
     if (categoryName.trim() !== '') {
       const requestBody: Data = {
+        updatedid: Number(selectedid),
         name: categoryName,
-        foodCategoryId: '',
-        foodCategoryName: categoryName,
+        foodCategoryImagepath: image || '',
       }
 
       updateCategoryMutation.mutate(requestBody)
@@ -71,51 +119,51 @@ const UpdateCategory = () => {
             />
           </Link>
         </div>
-        <form
-          onSubmit={handleSubmit}
-          encType='multipart/form-data'
-          className='grid gap-4'
-        >
-          <div className='border rounded-md py-2'>
-            <input
-              type='text'
-              placeholder='Category Name*'
-              className='w-full outline-none py-1 px-2'
-              onChange={(e) => setCategoryName(e.target.value)}
-            />
-          </div>
-          <div className='border rounded py-2'>
-            <label
-              className='flex gap-2 items-center pl-2 text-black cursor-pointer'
-              htmlFor='imageInput'
-            >
-              <span className='text-lg bg-green-500 px-4 py-1 rounded text-white font-serif'>
-                Change
-              </span>
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <form onSubmit={handleSubmit} className='grid gap-4'>
+            <div className='border rounded-md py-2'>
               <input
-                id='imageInput'
-                type='file'
-                accept='image/*'
-                className='hidden'
-                onChange={handleFileChange}
+                type='text'
+                placeholder='Category Name*'
+                className='w-full outline-none py-1 px-2'
+                value={categoryName}
+                onChange={(e) => setCategoryName(e.target.value)}
               />
-              {/* No File Selected */}
-            </label>
-          </div>
-          {image && (
-            <div className='flex justify-center items-center p-4'>
-              <img src={image} alt='Selected image' />
             </div>
-          )}
-          <div className='flex justify-end px-8 py-2'>
-            <button
-              className='bg-gray-200 rounded italic border border-primary text-center text-lg font-normal px-12 py-2'
-              type='submit'
-            >
-              {updateCategoryMutation.isLoading ? 'Updating...' : 'Update'}
-            </button>
-          </div>
-        </form>
+            <div className='border rounded py-2'>
+              <label
+                className='flex gap-2 items-center pl-2 text-black cursor-pointer'
+                htmlFor='imageInput'
+              >
+                <span className='text-lg bg-green-500 px-4 py-1 rounded text-white font-serif'>
+                  Change
+                </span>
+                <input
+                  id='imageInput'
+                  type='file'
+                  accept='image/*'
+                  className='hidden'
+                  onChange={handleFileChange}
+                />
+              </label>
+            </div>
+            {image && (
+              <div className='flex justify-center items-center p-4'>
+                <img src={image} alt='Selected image' />
+              </div>
+            )}
+            <div className='flex justify-end px-8 py-2'>
+              <button
+                className='bg-gray-200 rounded italic border border-primary text-center text-lg font-normal px-12 py-2'
+                type='submit'
+              >
+                {updateCategoryMutation.isLoading ? 'Updating...' : 'Update'}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   )

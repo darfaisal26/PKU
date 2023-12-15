@@ -29,13 +29,9 @@ const Patients = () => {
   const {
     data: patients = [],
     isLoading,
-    // isError,
     refetch,
   } = useQuery([queryKey, currentPage], () => fetchPatients(currentPage), {
     keepPreviousData: true,
-    onSuccess: (data) => {
-      console.log(data)
-    },
   })
 
   useEffect(() => {
@@ -95,30 +91,12 @@ const Patients = () => {
             <span className='flex justify-center'>Action</span>
           </div>
 
-          {patients.map((patient) => (
-            <div
-              key={patient.id}
-              className='border-b-gray-400 border-b text-uppercase font-normal grid grid-cols-5 text-lg text-gray-700 py-2 w-full'
-            >
-              <span className='flex justify-center px-2r'>
-                {patient.fullName}
-              </span>
-              <span className='flex justify-center px-2'>
-                {patient.emailAddress}
-              </span>
-              <span className='flex justify-center px-2'>
-                {patient.nhSnumber}
-              </span>
-              <span className='flex justify-center px-2'>
-                {patient.hospitalRegistrationnumber}
-              </span>
-              <span
-                className='flex px-2 justify-center'
-                onClick={() => handleViewDetails(patient)}
-              >
-                <LucideEye />
-              </span>
-            </div>
+          {patients.map((patient, index) => (
+            <PatientRow
+              key={index}
+              patient={patient}
+              handleViewDetails={handleViewDetails}
+            />
           ))}
 
           {patients.length === 0 && (
@@ -130,67 +108,103 @@ const Patients = () => {
           )}
 
           {showPatientDetails && selectedPatient && (
-            <>
-              <div className='fixed top-0 left-0 w-full h-full bg-black opacity-50 z-50'></div>
-              <div className='rounded-md grid gap-4 px-12 py-6 fixed top-[30%] left-[45%] border bg-white z-50 w-[30%]'>
-                <div className='flex justify-end'>
-                  <button
-                    onClick={() => setShowPatientDetails(false)}
-                    className='text-white rounded bg-gray-400 text-lg hover:bg-green-500 px-4 py-2'
-                  >
-                    Close
-                  </button>
-                </div>
-                <h1 className='text-3xl font-normal'>View patient</h1>
-                <div className='grid gap-3'>
-                  <div className='w-full rounded px-2 py-2 flex gap-6 text-lg'>
-                    <span className='font-medium'>Name:</span>
-                    <span>{selectedPatient.fullName}</span>
-                  </div>
-                  <div className='w-full rounded px-2 py-2 flex gap-6 text-lg'>
-                    <span className='font-medium'>Email:</span>
-                    <span>{selectedPatient.emailAddress}</span>
-                  </div>
-                  <div className='w-full rounded px-2 py-2 flex gap-6 text-lg'>
-                    <span className='font-medium'>Dob:</span>
-                    <span>{selectedPatient.dob}</span>
-                  </div>
-                  <div className='w-full rounded px-2 py-2 flex gap-6 text-lg'>
-                    <span className='font-medium'>NHS number:</span>
-                    <span>{selectedPatient.nhSnumber}</span>
-                  </div>
-                  <div className='w-full px-2 py-2 rounded flex gap-6 text-lg'>
-                    <span className='font-medium'>Hospital Registration:</span>
-                    <span>{selectedPatient.hospitalRegistrationnumber}</span>
-                  </div>
-                </div>
-              </div>
-            </>
+            <PatientDetailsModal
+              selectedPatient={selectedPatient}
+              setShowPatientDetails={setShowPatientDetails}
+            />
           )}
 
-          <div className='inline-flex justify-center'>
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className='bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l'
-            >
-              Previous
-            </button>
-
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={patients.length === 0}
-              className={`${
-                patients.length === 0 ? 'cursor-not-allowed' : 'cursor-pointer'
-              } bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r`}
-            >
-              Next
-            </button>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            handlePageChange={handlePageChange}
+            hasPreviousPage={currentPage !== 1}
+            hasNextPage={patients.length > 0}
+          />
         </div>
       </div>
     </div>
   )
 }
+
+const PatientRow = ({ patient, handleViewDetails }) => (
+  <div
+    className='border-b-gray-400 border-b text-uppercase font-normal grid grid-cols-5 text-lg text-gray-700 py-2 w-full cursor-pointer'
+    onClick={() => handleViewDetails(patient)}
+  >
+    <span className='flex justify-center px-2'>{patient.fullName}</span>
+    <span className='flex justify-center px-2'>{patient.emailAddress}</span>
+    <span className='flex justify-center px-2'>{patient.nhSnumber}</span>
+    <span className='flex justify-center px-2'>
+      {patient.hospitalRegistrationnumber}
+    </span>
+    <span className='flex px-2 justify-center'>
+      <LucideEye />
+    </span>
+  </div>
+)
+
+const PatientDetailsModal = ({ selectedPatient, setShowPatientDetails }) => (
+  <>
+    <div className='fixed top-0 left-0 w-full h-full bg-black opacity-50 z-50'></div>
+    <div className='rounded-md grid gap-4 px-12 py-6 fixed top-[30%] left-[45%] border bg-white z-50 w-[30%]'>
+      <div className='flex justify-end'>
+        <button
+          onClick={() => setShowPatientDetails(false)}
+          className='text-white rounded bg-gray-400 text-lg hover:bg-green-500 px-4 py-2'
+        >
+          Close
+        </button>
+      </div>
+      <h1 className='text-3xl font-normal'>View patient</h1>
+      <div className='grid gap-3 border border-red-900'>
+        <PatientDetailRow label='Name' value={selectedPatient.fullName} />
+        <PatientDetailRow label='Email' value={selectedPatient.emailAddress} />
+        <PatientDetailRow label='Dob' value={selectedPatient.dob} />
+        <PatientDetailRow
+          label='NHS number'
+          value={selectedPatient.nhSnumber}
+        />
+        <PatientDetailRow
+          label='Hospital Registration'
+          value={selectedPatient.hospitalRegistrationnumber}
+        />
+      </div>
+    </div>
+  </>
+)
+
+const PatientDetailRow = ({ label, value }) => (
+  <div className='w-full rounded px-2 py-2 flex gap-6 text-lg'>
+    <span className='font-medium'>{label}:</span>
+    <span>{value}</span>
+  </div>
+)
+
+const Pagination = ({
+  currentPage,
+  handlePageChange,
+  hasPreviousPage,
+  hasNextPage,
+}) => (
+  <div className='inline-flex justify-center'>
+    <button
+      onClick={() => handlePageChange(currentPage - 1)}
+      disabled={!hasPreviousPage}
+      className='bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l cursor-pointer'
+    >
+      Previous
+    </button>
+
+    <button
+      onClick={() => handlePageChange(currentPage + 1)}
+      disabled={!hasNextPage}
+      className={`${
+        !hasNextPage ? 'cursor-not-allowed' : 'cursor-pointer'
+      } bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r`}
+    >
+      Next
+    </button>
+  </div>
+)
 
 export default Patients

@@ -7,10 +7,12 @@ import Loader from '../../../../components/ui/Loader'
 const Search = () => {
   const categories = ['AllFoods', 'Enabled', 'Disabled']
   const [selectedCategory, setSelectedCategory] = useState(categories[0])
+  const [currentPage, setCurrentPage] = useState(1)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const fetchData = async (isDisabled) => {
     const response = await fetch(
-      `https://pkudevapi.imobisoft.uk/api/FoodDetail/GetAll?isDisabled=${isDisabled}&pageNo=1&pageSize=10`
+      `https://pkudevapi.imobisoft.uk/api/FoodDetail/GetAll?isDisabled=${isDisabled}&pageNo=${currentPage}&pageSize=16`
     )
 
     if (!response.ok) {
@@ -19,43 +21,67 @@ const Search = () => {
 
     const result = await response.json()
     console.log(result)
+    console.log(result.result.data.isDisabled)
     return result.result.data
   }
 
   const {
-    data: result = [],
+    data: foods = [],
     isLoading,
     isError,
     refetch,
-  } = useQuery(['foodData', selectedCategory], () =>
-    fetchData(
-      selectedCategory === categories[0]
-        ? ''
-        : selectedCategory === categories[1]
-          ? 0
-          : 1
-    )
+  } = useQuery(
+    ['foodData', selectedCategory],
+    () =>
+      fetchData(
+        selectedCategory === categories[0]
+          ? ''
+          : selectedCategory === categories[1]
+            ? 0
+            : 1
+      ),
+    {
+      keepPreviousData: true,
+    }
   )
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category)
+    setCurrentPage(1) // Reset to the first page when the category changes
     refetch()
   }
-
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage)
+    refetch()
+  }
+  const filteredData = foods
+    ? foods.filter((item) =>
+        item.leadFoodName.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : []
   return (
-    <div className='border border-red-900 py-10 px-10'>
-      <div>
-        <h1 className='text-lg font-normal'>Search BY food Name</h1>
+    <div className='py-10 px-10'>
+      <div className='px-10 py-10'>
+        <h1 className='text-xl font-medium text-white italic'>
+          Search BY food Name
+        </h1>
       </div>
-      <div className='border grid gap-6 mx-10 mt-6 bg-white'>
+      <div
+        className='rounded-md grid gap-6 mx-10 py-6 bg-white'
+        style={{ maxHeight: '500px', overflowY: 'auto' }}
+      >
         <div className='flex justify-end px-8 py-2 gap-10'>
-          <div className='relative border-2 flex border-gray-400 flex-wrap items-stretch rounded-md bg-white p-2'>
+          <div
+            className='relative border-2 flex border-gray-400 flex-wrap items-stretch
+           rounded-md bg-white p-2'
+          >
             <input
               type='search'
               className='relative text-lg flex-auto rounded font-normal leading-[1.6] outline-none'
               placeholder='Search'
               aria-label='Search'
               aria-describedby='button-addon1'
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
             <button
               className='relative bg-primary flex items-center rounded font-medium shadow-md'
@@ -91,43 +117,75 @@ const Search = () => {
             />
           </div>
         </div>
-        <div>
-          <div className='px-4 pt-4 rounded flex gap-10 font-normal text-lg border'>
-            {categories.map((category) => (
-              <button
-                key={category}
-                className={
+        <div className='px-4  rounded flex gap-10 font-normal text-lg  '>
+          {categories.map((category) => (
+            <button
+              key={category}
+              className={`
+                ${
                   selectedCategory === category
-                    ? 'border-b-2 border-green-500'
+                    ? 'border-b-4 border-green-500'
                     : ''
                 }
-                onClick={() => handleCategoryChange(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-          <div className='border'>
-            {isLoading && <Loader />}
-            {isError && <p>error fetch data</p>}
-            {result && (
-              <div className='border bg-warning grid grid-cols-4'>
-                {result.map((item) => (
-                  <div
-                    key={item.id}
-                    className='border border-green-900 px-4 py-8'
-                  >
-                    <div>
-                      <img src={item.foodImagepath} alt='' />
-                      <img src='' alt='' />
-                    </div>
-                    <span>{item.leadFoodName}</span>
-                    <span>{item.isDisabled}</span>
+              text-gray-500`}
+              onClick={() => handleCategoryChange(category)}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+        <div className=''>
+          {isLoading && <Loader />}
+          {isError && <p>error fetch data</p>}
+          {filteredData && (
+            <div className=' bg-white grid grid-cols-4 gap-4 px-2 '>
+              {filteredData.map((item) => (
+                <div
+                  key={item.id}
+                  className={`border border-green-900 rounded-md shadow-md bg-white px-4 py-4 grid gap-4
+                    
+                    ${item.isDisabled ? 'opacity-50' : ''}`}
+                >
+                  <div className='flex px-4  justify-between '>
+                    <img
+                      src={item.foodImagepath}
+                      alt='food'
+                      className=' h-16 w-16'
+                    />
+                    <img
+                      src={`https://pkudev.imobisoft.uk/assets/images/exchangeFree.png`}
+                      alt='ex free'
+                      className='h-16 w-16'
+                    />
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
+                  <div className='flex px-4  justify-between text-gray-500'>
+                    <span>{item.leadFoodName}</span>
+                    <span>{item.isDisabled.toString()}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className='flex justify-center mt-4  gap-4'>
+          <Button
+            title='Previous'
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`${
+              currentPage === 1 ? 'cursor-not-allowed' : 'cursor-pointer'
+            } border px-4 py-2 text-white bg-green-500 rounded`}
+            children={''}
+          />
+          <Button
+            title='Next'
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={foods.length < 16}
+            children={''}
+            className={`${
+              foods.length < 16 ? 'cursor-not-allowed' : 'cursor-pointer'
+            } border px-4 py-2 text-white bg-green-500 rounded`}
+          />
         </div>
       </div>
     </div>

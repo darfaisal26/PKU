@@ -43,15 +43,8 @@ const Dashboard = () => {
       <h1 className='text-2xl font-medium p-4 text-white italic'>Dashboard</h1>
       <div className='border bg-white grid px-8 py-16 rounded-md mx-auto'>
         <div className='grid grid-cols-3 gap-4'>
-          {menuItems.map(({ id, image, name, path }) => (
-            <Link to={path} key={id}>
-              <div className=' flex gap-4  items-center border px-4 py-4 rounded shadow-sm'>
-                <img src={image} alt='' className='' />
-                <span className='text-center text-xl font-serif italic'>
-                  {name}
-                </span>
-              </div>
-            </Link>
+          {menuItems.map((menuItem) => (
+            <MenuItem {...menuItem} key={menuItem.id} />
           ))}
         </div>
       </div>
@@ -59,4 +52,12 @@ const Dashboard = () => {
   )
 }
 
+const MenuItem = ({ id, image, name, path }) => (
+  <Link to={path} key={id}>
+    <div className='flex gap-4 items-center border px-4 py-8 rounded shadow-md'>
+      <img src={image} alt='' className='' />
+      <span className='text-center text-xl font-serif italic'>{name}</span>
+    </div>
+  </Link>
+)
 export default Dashboard
