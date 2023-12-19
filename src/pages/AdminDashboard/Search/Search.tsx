@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import Button from '../../../../components/button'
+import Button from '../../../components/button'
 import { Link } from 'react-router-dom'
-import Loader from '../../../../components/ui/Loader'
+import Loader from '../../../components/ui/Loader'
 
 const Search = () => {
   const categories = ['AllFoods', 'Enabled', 'Disabled']

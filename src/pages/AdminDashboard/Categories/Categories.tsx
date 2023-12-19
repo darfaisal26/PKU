@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import Button from '../../../../components/button'
-import Loader from '../../../../components/ui/Loader'
+import Button from '../../../components/button'
+import Loader from '../../../components/ui/Loader'
 import { Loader2 } from 'lucide-react'
 // import UpdateCategory from './UpdateCategory'
 
@@ -143,8 +143,9 @@ const Categories = () => {
             {filteredData.map((detail, index) => (
               <div
                 key={index}
-                className='border-2 border-gray-400 bg-white shadow-md opacity-90 hover:opacity-100 cursor-pointer hover:border-green-600 
-                 grid gap-2 font-serif italic rounded-md p-4 overflow-hidden'
+                className='border-2 border-gray-400 bg-white shadow-md opacity-90 hover:opacity-100
+                 cursor-pointer hover:border-green-600 
+                 grid gap-2 font-serif italic rounded-lg p-4 overflow-hidden'
               >
                 <span className='h-[5rem] '>
                   <img

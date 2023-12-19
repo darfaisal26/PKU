@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import Button from '../../../../components/button'
-import { Link, useParams } from 'react-router-dom'
-import { getAuthToken } from '../../../../utils/auth'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { getAuthToken } from '../../../utils/auth'
 import { Loader } from 'lucide-react'
+import Button from '../../../components/button'
+import toast from 'react-hot-toast'
 
 interface Data {
   updatedid: number
@@ -13,6 +14,7 @@ interface Data {
 
 const UpdateCategory = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [categoryName, setCategoryName] = useState<string>('')
   const [image, setImage] = useState<string | null>(null)
   const authToken = getAuthToken()
@@ -78,13 +80,17 @@ const UpdateCategory = () => {
         body: JSON.stringify(requestData),
       }).then((response) => {
         if (!response.ok) {
-          throw new Error(`Update failed with status: ${response.status}`)
+          toast.error(`Update failed with status: ${response.status}`)
+          console.log(`Update failed with status: ${response.status}`)
         }
         return response.json()
       }),
     {
       onError: (error: Error) => {
         console.error('Update failed:', error.message)
+      },
+      onSuccess: () => {
+        navigate('/categories')
       },
     }
   )

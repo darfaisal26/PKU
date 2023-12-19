@@ -22,18 +22,14 @@ const navigation = [
   {
     name: 'Clinicians',
     icon: 'https://pkudev.imobisoft.uk/assets/images/clinician.svg',
-    path: '/clinicians',
+    path: '/admin-clinicians',
   },
   {
     name: 'Patients',
     icon: 'https://pkudev.imobisoft.uk/assets/images/patient.svg',
     path: '/patients',
   },
-  // {
-  //   name: 'Assessments',
-  //   icon: 'https://pkudev.imobisoft.uk/assets/icons/assesment.svg',
-  //   path: '/asessments',
-  // },
+
   {
     name: 'Change password',
     icon: 'https://pkudev.imobisoft.uk/assets/images/password.png',

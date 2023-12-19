@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import foodImage from '../../../assets/food.svg'
-import subcategoryImage from '../../../assets/sub-categories.svg'
+import foodImage from '../../assets/food.svg'
+import subcategoryImage from '../../assets/food.svg'
 
 const Dashboard = () => {
   const menuItems = [

@@ -28,13 +28,9 @@ export default function SideNav() {
       {navigation.map((navItem, index) => (
         <div key={index}>
           <NavLink
-            to={
-              navItem.path === '/admin-sideNav'
-                ? '/admin-sideNav/dashboard'
-                : navItem.path
-            }
+            to={navItem.path === '/admin-sideNav' ? '/dashboard' : navItem.path}
             className='mb-4 flex gap-2 items-center cursor-pointer px-2 
-                py-2  text-lg  rounded-md text-black font-normal'
+                py-2  text-lg border rounded-md text-black font-normal'
             style={
               location.pathname === navItem.path
                 ? activeStyle
@@ -47,11 +43,10 @@ export default function SideNav() {
         </div>
       ))}
 
-      <div className='mb-8  flex gap-2' onClick={handleLogout}>
+      <div className=' flex gap-2 px-2 ' onClick={handleLogout}>
         <img
           src='https://pkudev.imobisoft.uk/assets/images/logout.png'
-          height={30}
-          width={30}
+          className='h-6 '
         ></img>
         <span className='text-lg'>Logout</span>
       </div>

@@ -1,7 +1,5 @@
-// EditClinicianForm.js
-
 import { useState } from 'react'
-import Button from '../../../../components/button'
+import Button from '../../../components/button'
 
 const EditClinicianForm = ({ onUpdate }) => {
   const [firstName, setFirstName] = useState('')
@@ -10,12 +8,8 @@ const EditClinicianForm = ({ onUpdate }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    // Validation logic if needed
-
-    // Call the onUpdate prop with the updated data
     onUpdate({ firstName, surName })
 
-    // Reset form fields
     setFirstName('')
     setSurName('')
   }

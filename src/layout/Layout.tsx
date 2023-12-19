@@ -1,22 +1,22 @@
-import PatientSideNav from '../components/patientSideNav'
-import AdminSideNav from '../components/AdminSideNav'
 import { Outlet } from 'react-router-dom'
+import AdminSideNav from '../components/AdminSideNav'
+import ClinicianSideNav from '../components/ClinicianSideNav'
 
 const Layout = () => {
   const userRole = localStorage.getItem('userRole') || 'Admin'
+
   return (
     <div className='flex'>
       <aside className='w-[18%]'>
         {userRole === 'Admin' ? (
           <AdminSideNav />
         ) : userRole === 'Clinician' ? (
-          <PatientSideNav />
+          <ClinicianSideNav />
         ) : (
-          // <div>Error: Invalid user role</div>
           ''
         )}
       </aside>
-      <main className='w-[82%] min-h-screen bg-green-600'>
+      <main className='w-[82%] min-h-screen bg-[#1E5631]'>
         <Outlet />
       </main>
     </div>

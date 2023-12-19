@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import Button from '../../../../components/button'
-import { getAuthToken } from '../../../../utils/auth'
+import Button from '../../../components/button'
+import { getAuthToken } from '../../../utils/auth'
 import { Link, useNavigate } from 'react-router-dom'
 
 interface Data {

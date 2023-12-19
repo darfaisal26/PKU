@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
-import Button from '../../../../components/button'
+import Button from '../../../components/button'
 import { useState } from 'react'
-import { getAuthToken } from '../../../../utils/auth'
+import { getAuthToken } from '../../../utils/auth'
 import { Link, useNavigate } from 'react-router-dom'
 
 const AddClinician = () => {

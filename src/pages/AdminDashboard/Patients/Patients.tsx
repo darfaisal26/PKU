@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { LucideEye } from 'lucide-react'
-import { getAuthToken } from '../../../../utils/auth'
-import Loader from '../../../../components/ui/Loader'
+import { getAuthToken } from '../../../utils/auth'
+import Loader from '../../../components/ui/Loader'
 
 const Patients = () => {
   const [selectedPatient, setSelectedPatient] = useState(null)
@@ -50,7 +50,7 @@ const Patients = () => {
   return (
     <div className='mx-10 grid gap-10 py-16'>
       {isLoading && <Loader />}
-      <h1 className='text-lg font-medium text-white'>Clinician</h1>
+      <h1 className='text-lg font-medium text-white'>Patients</h1>
 
       <div className='bg-white rounded-md flex flex-col gap-10 px-4 pt-6'>
         <div className='flex justify-end py-2 gap-10'>

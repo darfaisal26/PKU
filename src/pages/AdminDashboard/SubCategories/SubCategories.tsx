@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import Button from '../../../../components/button'
-import Loader from '../../../../components/ui/Loader'
+import Button from '../../../components/button'
+import Loader from '../../../components/ui/Loader'
 import { useQuery } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 

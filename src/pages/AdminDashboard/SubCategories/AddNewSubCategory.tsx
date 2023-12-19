@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import Button from '../../../../components/button'
+import Button from '../../../components/button'
 
 interface Data {
   CategoryName: string
